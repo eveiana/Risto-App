@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "type": "object",
+      "description": "User profile data",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "subscriptionPlan": { "type": "string" }
+      },
+      "required": ["email"]
+    },
+    "ReadingProgress": {
+      "title": "ReadingProgress",
+      "type": "object",
+      "description": "User progress per chapter",
+      "properties": {
+        "userId": { "type": "string" },
+        "chapterId": { "type": "string" },
+        "progress": { "type": "number" }
+      },
+      "required": ["userId", "chapterId"]
+    },
+    "Favorite": {
+      "title": "Favorite",
+      "type": "object",
+      "description": "User favorite books",
+      "properties": {
+        "userId": { "type": "string" },
+        "bookId": { "type": "string" }
+      },
+      "required": ["userId", "bookId"]
+    },
+    "Book": {
+      "title": "Book",
+      "type": "object",
+      "description": "User registered custom book",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "author": { "type": "string" },
+        "description": { "type": "string" },
+        "genres": {
+          "type": "array"
+        },
+        "coverUrl": { "type": "string" },
+        "pages": {
+          "type": "array"
+        },
+        "voicedBy": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "title", "author"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/reading_progress/{progressId}": {
+      "schema": "ReadingProgress",
+      "description": "User reading progress"
+    },
+    "/favorites/{favoriteId}": {
+      "schema": "Favorite",
+      "description": "User favorite books"
+    },
+    "/books/{bookId}": {
+      "schema": "Book",
+      "description": "User custom books and uploaded elements"
+    }
+  }
+}

@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default-deny catch-all rule
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reuseable global functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Users Collection rules
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create, update: if isOwner(userId) && request.resource.data.email is string;
+      allow delete: if false;
+    }
+
+    // Reading Progress Collection rules
+    match /reading_progress/{progressId} {
+      allow read, write: if isSignedIn() && (
+        resource == null || resource.data.userId == request.auth.uid
+      ) && (
+        request.resource == null || request.resource.data.userId == request.auth.uid
+      );
+    }
+
+    // Favorites Collection rules
+    match /favorites/{favoriteId} {
+      allow read, write: if isSignedIn() && (
+        resource == null || resource.data.userId == request.auth.uid
+      ) && (
+        request.resource == null || request.resource.data.userId == request.auth.uid
+      );
+    }
+
+    // Custom Books Collection rules
+    match /books/{bookId} {
+      // Allow any signed in user to read books
+      allow read: if isSignedIn();
+      // Allow creation of books if authenticated and setting their own userId
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      // Allow editing/deletion of their own registered books
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid && (request.resource == null || request.resource.data.userId == request.auth.uid);
+    }
+  }
+}

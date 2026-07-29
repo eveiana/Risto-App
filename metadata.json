@@ -1,0 +1,8 @@
+{
+  "name": "Remix: story",
+  "description": "Just a lion telling its story. A premium storytelling platform featuring high-fidelity screen views, read logs, dark/light theme options, and custom profiles.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
